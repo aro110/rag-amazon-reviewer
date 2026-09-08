@@ -1,0 +1,32 @@
+# Środowisko i sekrety (krytyczne!)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Dane (za duże na repo, pobierane osobno)
+data/
+
+# Zależności
+node_modules/
+__pycache__/
+*.pyc
+venv/
+.venv/
+vendor/
+
+# Katalogi wyjściowe / build
+dist/
+build/
+out/
+.next/
+*.log
+
+# Pliki systemowe i edytorów
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
