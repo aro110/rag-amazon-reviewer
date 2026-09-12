@@ -3,14 +3,13 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
-RAW_PATH = Path("data/raw/Reviews.csv")
-CLEAN_PATH = Path("data/processed/reviews_clean.csv")
+RAW_PATH = Path("~/Projekty/RAG/data/raw/Reviews.csv")
+CLEAN_PATH = Path("~/Projekty/RAG/data/processed/reviews_clean.csv")
 
 def data_info(df):
     print(df.info())
     print(df.isnull().sum())
     print(df.duplicated(subset=["Text"]).sum())
-    print(df["Score"].value_counts())
     if "text_length" in df.columns:
         print(df["text_length"].describe())
 
@@ -23,8 +22,8 @@ def normalize_number(number):
 def clean_text(series):
     return (
         series
-        .str.replace(r"<.*?>", "", regex=True)      # usuń tagi HTML (Amazon reviews je mają)
-        .str.replace(r"http\S+", "", regex=True)    # usuń linki
+        .str.replace(r"<.*?>", "", regex=True)      # tagi HTML
+        .str.replace(r"http\S+", "", regex=True)    # linki
         .str.strip()
     )
 
@@ -51,6 +50,10 @@ def load_data():
     df_clean = df[["ProductId", "Score", "Summary", "Text", "date", "helpfulness_ratio", "text_length"]]
     data_info(df_clean)
 
+    df_sample = df_clean.groupby("Score", group_keys=False).sample(
+        frac=3000 / len(df_clean), random_state=42
+    )
+    
+    data_info(df_sample)
     CLEAN_PATH.parent.mkdir(parents=True, exist_ok=True)
-    df_clean.to_csv(CLEAN_PATH, index=False)
-    return df_clean
+    df_sample.to_csv(CLEAN_PATH, index=False)
